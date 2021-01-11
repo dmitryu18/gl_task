@@ -1,10 +1,13 @@
-﻿
+
 param(
 	[parameter(Mandatory = $false)]
 	$siteName,
 
 	[parameter(Mandatory = $false)]
 	$sitePhysicalPath,
+
+	[parameter(Mandatory = $false)]
+	$publishsorSourcePath
 	
 	[parameter(Mandatory = $false)]
 	$siteAppPoolName,
@@ -90,6 +93,19 @@ else
 {
 	$sitePhysicalPath = $sitePhysicalPath.Trim()
 }
+
+
+if(!$publishsorSourcePath)
+{
+	$publishsorSourcePath =  $env:SystemDrive + "\temp\WDeploySite"
+}
+else
+{
+	$publishsorSourcePath = $publishsorSourcePath.Trim()
+}
+
+
+
 
 #global variable. Because we need to return two values from MWA from one function. [REF] has bugs. Hence global
 $global:sitePath = $sitePhysicalPath
@@ -619,6 +635,8 @@ else
 #Remove-Item $physicalPath$appName -Force -Recurse
 Remove-Item $sitePhysicalPath -Force -Recurse
 }
+
+Copy-Item -Path $publishsorSourcePath -Destination $sitePhysicalPath -Recurse
 
 Initialize
 if(CheckUsernamePasswordCombination $deploymentUserName $deploymentUserPassword)
